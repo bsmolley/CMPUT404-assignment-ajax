@@ -74,17 +74,22 @@ def flask_post_json():
 @app.route("/")
 def hello():
     '''Return something coherent here.. perhaps redirect to /static/index.html '''
-    return flask.redirect("http://127.0.0.1:5000/static/index.html", code=302)
+    return flask.redirect("/static/index.html")
 
 @app.route("/entity/<entity>", methods=['POST','PUT'])
 def update(entity):
     '''update the entities via this interface'''
     if request.method == 'PUT':
-        myWorld.set(entity, json.loads(request.data))
-        print 
+        myWorld.set(entity, flask_post_json())
         return flask.make_response(request.data)
+
     elif request.method == "POST":
-        myWorld.update(entity, )
+        keys = json.dumps(json.loads(request.data).keys())
+        vals = json.dumps(json.loads(request.data).values())
+        for i in range(0, len(keys)):
+            myWorld.update(entity, keys[i], vals[i])
+        return flask.make_response(request.data)
+
     else:
         return flask.make_response("Malformed request\n")
 
@@ -92,7 +97,7 @@ def update(entity):
 def world():
     '''you should probably return the world here'''
     if request.method == "GET" or request.method == "POST":
-        return myWorld.world()
+        return json.dumps(myWorld.world())
     else:
         return "error_in_world"
 
