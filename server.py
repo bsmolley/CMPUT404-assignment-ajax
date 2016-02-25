@@ -55,7 +55,7 @@ class World:
         return self.space
 
 # you can test your webservice from the commandline
-# curl -v   -H "Content-Type: appication/json" -X PUT http://127.0.0.1:5000/entity/X -d '{"x":1,"y":1}' 
+# curl -v   -H "Content-Type: application/json" -X PUT http://127.0.0.1:5000/entity/X -d '{"x":1,"y":1}' 
 
 myWorld = World()          
 
@@ -74,27 +74,44 @@ def flask_post_json():
 @app.route("/")
 def hello():
     '''Return something coherent here.. perhaps redirect to /static/index.html '''
-    return None
+    return flask.redirect("http://127.0.0.1:5000/static/index.html", code=302)
 
 @app.route("/entity/<entity>", methods=['POST','PUT'])
 def update(entity):
     '''update the entities via this interface'''
-    return None
+    if request.method == 'PUT':
+        myWorld.set(entity, json.loads(request.data))
+        print 
+        return flask.make_response(request.data)
+    elif request.method == "POST":
+        myWorld.update(entity, )
+    else:
+        return flask.make_response("Malformed request\n")
 
 @app.route("/world", methods=['POST','GET'])    
 def world():
     '''you should probably return the world here'''
-    return None
+    if request.method == "GET" or request.method == "POST":
+        return myWorld.world()
+    else:
+        return "error_in_world"
 
 @app.route("/entity/<entity>")    
 def get_entity(entity):
     '''This is the GET version of the entity interface, return a representation of the entity'''
-    return None
+    ent = myWorld.get(entity)
+    return flask.make_response(json.dumps(ent))
 
 @app.route("/clear", methods=['POST','GET'])
 def clear():
     '''Clear the world out!'''
-    return None
+    if request.method == "POST":
+        myWorld.clear()
+        return flask.make_response("Cleared world")
+    elif request.method == "GET":
+        return flask.make_response("GET clear")
+    else:
+        return flask.make_response("error_in_clear")
 
 if __name__ == "__main__":
     app.run()
