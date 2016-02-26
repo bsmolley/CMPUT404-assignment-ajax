@@ -39,7 +39,9 @@ function sendJSONXMLHTTPRequest(url, objects, callback) {
             try {
                 if (xhr.status==200) {
                     //XXX: parse some JSON from the request!
+                    var data = JSON.parse(objects)
                     //XXX: Pass the data to the callback!
+                    callback(data)
                 }
             } 
             catch(e) {
@@ -49,6 +51,13 @@ function sendJSONXMLHTTPRequest(url, objects, callback) {
     };
     //XXX: POST to a URL
     //XXX: set the mimetype and the accept headers!
+    $.ajax({
+        type: "POST",
+        contentType: "application/json",
+        url: url,
+        data: objects,
+        dataType: "json"
+    });
     // Remember to use application/json !
 }
 
@@ -58,15 +67,16 @@ world = {};
 //XXX: TODO Make this prettier!
 function drawCircle(context,entity) {
     with(context) {
-        beginPath();              
+        beginPath();            
         lineWidth = 3;
         var x = entity["x"];
         var y = entity["y"];
         //moveTo(x,y);
         fillStyle = entity["colour"];
         strokeStyle = fillStyle;
-        arc(x, y, (entity["radius"])?entity["radius"]:50, 0, 2.0 * Math.PI, false);  
-        stroke();                                
+        arc(x, y, (entity["radius"])?entity["radius"]:50, 0, 2.0 * Math.PI, false); 
+        stroke();    
+        fill();                            
     }
 }
 
@@ -82,9 +92,9 @@ function prepEntity(entity) {
 
 function clearFrame() {
     with(context) {
-	moveTo(0,0);
-	fillStyle = "#000";
-	fillRect(0,0,W,H);
+    	moveTo(0,0);
+    	fillStyle = "#000";
+    	fillRect(0,0,W,H);
     }
 
 }
@@ -138,6 +148,7 @@ function addEntity(entity, data) {
     world[entity] = data;
     drawNextFrame(); // (but should we?)
     //XXX: Send a XHTML Request that updates the entity you just  modified!
+    sendJSONXMLHTTPRequest(url, data, callback);
 
 }
 
