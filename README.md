@@ -31,3 +31,6 @@ http://www.w3schools.com/ajax/ajax_xmlhttprequest_send.asp
 
 JSON & Ajax Author: Nathan Ramano:
 http://stackoverflow.com/questions/6418220/javascript-send-json-object-with-ajax
+
+AJAX Observer Author: Abram Hindle:
+https://github.com/abramhindle/CMPUT404-AJAX-Slides/tree/master/ObserverExample/static

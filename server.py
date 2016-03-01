@@ -82,32 +82,25 @@ def update(entity):
     if request.method == 'PUT' or request.method == "POST":
         myWorld.set(entity, flask_post_json())
         return json.dumps(myWorld.get(entity))
-        #return flask.make_response(request.data)
-
-    else:
-        return flask.make_response("Malformed request\n")
 
 @app.route("/world", methods=['POST','GET'])    
 def world():
     '''you should probably return the world here'''
     if request.method == "GET" or request.method == "POST":
         return json.dumps(myWorld.world())
-    else:
-        return "error_in_world"
 
 @app.route("/entity/<entity>")    
 def get_entity(entity):
     '''This is the GET version of the entity interface, return a representation of the entity'''
     ent = myWorld.get(entity)
-    #return flask.make_response(json.dumps(ent))
     return json.dumps(myWorld.get(entity))
 
 @app.route("/clear", methods=['POST','GET'])
 def clear():
     '''Clear the world out!'''
-    # if request.method == "POST":
-    myWorld.clear()
-    return json.dumps(myWorld.world())
+    if request.method == "POST" or request.method == "PUT":
+        myWorld.clear()
+        return json.dumps(myWorld.world())
 
 if __name__ == "__main__":
     app.run()
