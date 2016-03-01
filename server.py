@@ -83,13 +83,14 @@ def update(entity):
         myWorld.set(entity, flask_post_json())
         return json.dumps(myWorld.get(entity))
 
-@app.route("/world", methods=['POST','GET'])    
+
+@app.route("/world", methods=['POST','GET'])
 def world():
     '''you should probably return the world here'''
     if request.method == "GET" or request.method == "POST":
         return json.dumps(myWorld.world())
 
-@app.route("/entity/<entity>")    
+@app.route("/entity/<entity>")
 def get_entity(entity):
     '''This is the GET version of the entity interface, return a representation of the entity'''
     ent = myWorld.get(entity)
